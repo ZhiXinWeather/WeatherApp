@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,8 +27,6 @@ import com.google.gson.Gson;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 
 import Adapter.DayAdapter;
 import App.MyApplication;
@@ -41,7 +38,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by haiyuan 1995 on 2016/8/31.
+ * 主界面的fragment
  */
 
 public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick {
@@ -159,7 +156,12 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick 
         try {
             long last_update= new SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse(dateTime).getTime();
             String  last_time= String.valueOf((System.currentTimeMillis()-last_update)/1000/60);
-            idFragmentLastUpdate.setText(last_time+"分钟前 发布");
+            if (Integer.valueOf(last_time)>0) {
+                idFragmentLastUpdate.setText(last_time + "分钟前 发布");
+            }else
+            {
+                idFragmentLastUpdate.setText("最近发布");
+            }
         } catch (ParseException e) {
             e.printStackTrace();
         }
