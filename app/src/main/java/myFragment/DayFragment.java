@@ -69,12 +69,14 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick 
 
 
     private DayAdapter mDayAdapter;
+    private String locationStr;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.app_bar_main, container, false);
+        initLocation();
         initView(view);
         initData();
         initDailyWeather();
@@ -82,6 +84,11 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick 
 
         ButterKnife.bind(this, view);
         return view;
+    }
+
+    private void initLocation() {
+     locationStr= getActivity().getSharedPreferences("config",getActivity().MODE_PRIVATE).getString("locationStr","");
+
     }
 
     public void initView(View view) {
@@ -98,8 +105,14 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick 
     }
 
 
-    public void initDailyWeather() {//初始化近期天气数据列表
-        final String dailyWeather = Url.Weather_Daily_Url + "?key=" + MyApplication.Key + "&location=ip&&start=0&days=5";
+    public void initDailyWeather() {//初始化近期天气数据列表,根据经纬度查询
+        String dailyWeather;
+        if (locationStr.length()==0||locationStr==null) {
+            dailyWeather= Url.Weather_Daily_Url + "?key=" + MyApplication.Key + "&location=ip&start=0&days=5";
+
+        }else{
+            dailyWeather= Url.Weather_Daily_Url + "?key=" + MyApplication.Key + "&location=" + locationStr + "&start=0&days=5";
+        }
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, dailyWeather, new Response.Listener<String>() {
             @Override
@@ -123,9 +136,13 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick 
     }
 
     public void initData() {
-
-        //默认用IP地址作为查询天气的城市
-        String weathernow = Url.Weather_Now_Url + "?key=" + MyApplication.Key + "&location=ip";
+        String weathernow;
+        if (locationStr.length()==0||locationStr==null){
+            weathernow = Url.Weather_Now_Url + "?key=" + MyApplication.Key + "&location=ip";
+        }else {
+            //默认用IP地址作为查询天气的城市
+            weathernow = Url.Weather_Now_Url + "?key=" + MyApplication.Key + "&location="+locationStr;
+        }
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, weathernow, new Response.Listener<String>() {
             @Override

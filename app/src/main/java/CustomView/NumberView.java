@@ -13,7 +13,7 @@ import android.widget.TextView;
 public class NumberView extends TextView {
 
     private  int duration=1500;//时长
-    private int number=0;
+    private  int number=0;
 
     public NumberView(Context context) {
         super(context);

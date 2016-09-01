@@ -28,7 +28,6 @@ private RelativeLayout activityMain;
         super.initView(view);
         activityMain= (RelativeLayout) view.findViewById(R.id.activity_main);
         activityMain.setBackgroundResource(R.mipmap.bg_night);
-
         fab.setImageResource(R.mipmap.moon);
     }
 

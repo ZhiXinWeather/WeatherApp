@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">@android:color/transparent</color>
     <color name="colorPrimaryDark">@android:color/transparent</color>
-    <color name="colorAccent">#00BCD4</color>
+    <color name="colorAccent">#88ddff</color>
     <color name="colorWrite">#ffffff</color>
 
     <color name="grey200">#EEEEEE</color>
