@@ -6,6 +6,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -76,18 +78,26 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.app_bar_main, container, false);
+        ButterKnife.bind(this, view);
         initLocation();
         initView(view);
+
+
         initData();
         initDailyWeather();
 
 
-        ButterKnife.bind(this, view);
         return view;
     }
 
+
+
+
+
+
+
     private void initLocation() {
-     locationStr= getActivity().getSharedPreferences("config",getActivity().MODE_PRIVATE).getString("locationStr","");
+        locationStr = getActivity().getSharedPreferences("config", getActivity().MODE_PRIVATE).getString("locationStr", "");
 
     }
 
@@ -98,7 +108,7 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Toast.makeText(getActivity(), "test", Toast.LENGTH_LONG).show();
             }
         });
         fab.setImageResource(R.mipmap.sun);
@@ -107,11 +117,11 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick 
 
     public void initDailyWeather() {//初始化近期天气数据列表,根据经纬度查询
         String dailyWeather;
-        if (locationStr.length()==0||locationStr==null) {
-            dailyWeather= Url.Weather_Daily_Url + "?key=" + MyApplication.Key + "&location=ip&start=0&days=5";
+        if (locationStr.length() == 0 || locationStr == null) {
+            dailyWeather = Url.Weather_Daily_Url + "?key=" + MyApplication.Key + "&location=ip&start=0&days=5";
 
-        }else{
-            dailyWeather= Url.Weather_Daily_Url + "?key=" + MyApplication.Key + "&location=" + locationStr + "&start=0&days=5";
+        } else {
+            dailyWeather = Url.Weather_Daily_Url + "?key=" + MyApplication.Key + "&location=" + locationStr + "&start=0&days=5";
         }
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, dailyWeather, new Response.Listener<String>() {
@@ -137,11 +147,11 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick 
 
     public void initData() {
         String weathernow;
-        if (locationStr.length()==0||locationStr==null){
+        if (locationStr.length() == 0 || locationStr == null) {
             weathernow = Url.Weather_Now_Url + "?key=" + MyApplication.Key + "&location=ip";
-        }else {
+        } else {
             //默认用IP地址作为查询天气的城市
-            weathernow = Url.Weather_Now_Url + "?key=" + MyApplication.Key + "&location="+locationStr;
+            weathernow = Url.Weather_Now_Url + "?key=" + MyApplication.Key + "&location=" + locationStr;
         }
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, weathernow, new Response.Listener<String>() {
@@ -167,22 +177,20 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick 
 
     public void setData(WeatherNowData data) {
         //时间转换为多少分钟前更新数据
-        String dateTime=data.getResults().get(0).getLast_update();
-        dateTime=dateTime.replace("T","");
+        String dateTime = data.getResults().get(0).getLast_update();
+        dateTime = dateTime.replace("T", "");
 
         try {
-            long last_update= new SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse(dateTime).getTime();
-            String  last_time= String.valueOf((System.currentTimeMillis()-last_update)/1000/60);
-            if (Integer.valueOf(last_time)>0) {
+            long last_update = new SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse(dateTime).getTime();
+            String last_time = String.valueOf((System.currentTimeMillis() - last_update) / 1000 / 60);
+            if (Integer.valueOf(last_time) > 0) {
                 idFragmentLastUpdate.setText(last_time + "分钟前 发布");
-            }else
-            {
+            } else {
                 idFragmentLastUpdate.setText("最近发布");
             }
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
 
 
         idMainTemperature.setNumber(Integer.valueOf(data.getResults().get(0).getNow().getTemperature()));
@@ -199,8 +207,8 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick 
 
     public void initAdapter(DailyWeatherData dailyWeatherData) {
         mDayAdapter = new DayAdapter(getActivity(), dailyWeatherData);
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-//        GridLayoutManager gridLayoutManager=new GridLayoutManager(this,2,GridLayoutManager.VERTICAL,false);
         mDayAdapter.setRecyItemOnclick(this);
 
         idMainRecyclerview.setLayoutManager(linearLayoutManager);

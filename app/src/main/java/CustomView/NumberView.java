@@ -34,6 +34,8 @@ public class NumberView extends TextView {
     }
 
     public void showNumberWithAnimation(){
+        //属性动画参数，this为动画的目标对象，“number”为改对象需要改变的属性，需要有get和set方法，系统需要调用
+        //后面则是变化范围
         ObjectAnimator objectAnimator=ObjectAnimator.ofInt(this,"number",0,number);
         objectAnimator.setDuration(duration);
 
@@ -48,6 +50,7 @@ public class NumberView extends TextView {
 
     public void setNumber(int number) {
         this.number = number;
+        //属性动画变化一次就设置一次文字内容
         setText(number+"℃");
     }
 }

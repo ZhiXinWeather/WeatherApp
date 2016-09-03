@@ -1,24 +1,26 @@
 package com.example.haiyuan1995.myapplication;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +43,9 @@ public class MainActivity extends FragmentActivity
     NavigationView navView;
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
+    @BindView(R.id.id_main_refresh)
+    SwipeRefreshLayout idMainRefresh;
+
 
     private List<Fragment> list;
     // 获取位置
@@ -48,6 +53,7 @@ public class MainActivity extends FragmentActivity
     private String locationProvider;
 
     private static String jingweidu;
+    private MyFragmentPagerAdapter myFragmentPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +66,21 @@ public class MainActivity extends FragmentActivity
         initLocation();
 //        initView();
         initFragmentViewPager();
+
+
+        idMainRefresh.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light, android.R.color.holo_orange_light, android.R.color.holo_green_light);
+      idMainRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+          @Override
+          public void onRefresh() {
+              new Handler().postDelayed(new Runnable() {
+                  @Override
+                  public void run() {
+                      myFragmentPagerAdapter.notifyDataSetChanged();
+                      idMainRefresh.setRefreshing(false);
+                  }
+              },2000);
+          }
+      });
 //        initData();
 //        initDailyWeather();
 
@@ -86,8 +107,8 @@ public class MainActivity extends FragmentActivity
         if (location != null) {
             //不为空,显示地理位置经纬度
             returnLocation(location);
-        }else{
-            location=locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        } else {
+            location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
             returnLocation(location);
         }
 
@@ -99,7 +120,7 @@ public class MainActivity extends FragmentActivity
     private void returnLocation(Location location) {
         //心知天气API
         //经纬度 例如：q=39.93:116.40（注意纬度前经度在后，冒号分隔）
-        if (location!=null) {
+        if (location != null) {
             jingweidu = location.getLatitude() + ":" + location.getLongitude();
         }
     }
@@ -145,23 +166,15 @@ public class MainActivity extends FragmentActivity
         Editor editor = sp.edit();
         editor.putString("locationStr", jingweidu);
         editor.commit();
-//        Bundle bundle = new Bundle();
-//        bundle.putString("locationStr", jingweidu);
 //
-//        dayFragment.setArguments(bundle);
-//        //开始Fragment事务
-//        FragmentManager fragmentManager=getSupportFragmentManager();
-//        FragmentTransaction fragmentTransaction=fragmentManager.beginTransaction();
-//        //将Fragment添加到事务中，并指定一个TAG
-//        fragmentTransaction.add(dayFragment,"activity");
-//        //提交Fragment事务
-//        fragmentTransaction.commit();
 
         list.add(dayFragment);
         list.add(nightFragment);
 
-        final MyFragmentPagerAdapter myFragmentPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), list);
+        myFragmentPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), list);
         idFragmentViewpager.setAdapter(myFragmentPagerAdapter);
+
+
         idFragmentViewpager.setPageTransformer(true, new AlphaTransformer());
 
         idFragmentViewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -180,7 +193,28 @@ public class MainActivity extends FragmentActivity
             public void onPageScrollStateChanged(int state) {
             }
         });
+        /**
+         * 解决viewpager和SwipeRefreshLayout下拉冲突的问题，
+         * viewpager在move的时候SwipeRefreshLayout
+         * 控件设置不可用
+         * */
 
+        idFragmentViewpager.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction())
+                {
+                    case MotionEvent.ACTION_MOVE:
+                        idMainRefresh.setEnabled(false);
+                        break;
+                    case MotionEvent.ACTION_CANCEL:
+                    case MotionEvent.ACTION_UP:
+                        idMainRefresh.setEnabled(true);
+                        break;
+                }
+                return false;
+            }
+        });
 
     }
 
@@ -227,16 +261,7 @@ public class MainActivity extends FragmentActivity
         super.onDestroy();
         if (locationManager != null) {
             //移除监听器
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return;
-            }
+
             locationManager.removeUpdates(locationListener);
         }
     }
