@@ -1,12 +1,12 @@
 package myFragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -24,6 +24,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
 import com.example.haiyuan1995.myapplication.R;
+import com.example.haiyuan1995.myapplication.SearchActivity;
 import com.example.haiyuan1995.myapplication.SelectWeatherImage;
 import com.google.gson.Gson;
 
@@ -32,6 +33,7 @@ import java.text.SimpleDateFormat;
 
 import Adapter.DayAdapter;
 import App.MyApplication;
+import CustomView.FabAnim;
 import CustomView.NumberView;
 import GsonBean.DailyWeatherData;
 import GsonBean.WeatherNowData;
@@ -43,11 +45,9 @@ import butterknife.ButterKnife;
  * 主界面的fragment
  */
 
-public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick {
+public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick,View.OnClickListener {
 
 
-    @BindView(R.id.fab)
-    FloatingActionButton fab;
     @BindView(R.id.id_main_path)
     TextView idMainPath;
     @BindView(R.id.id_main_temperature)
@@ -68,6 +68,14 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick 
     AppBarLayout appbarLayout;
     @BindView(R.id.id_fragment_last_update)
     TextView idFragmentLastUpdate;
+    @BindView(R.id.fab1)
+    FloatingActionButton fab1;
+    @BindView(R.id.fab2)
+    FloatingActionButton fab2;
+    @BindView(R.id.fab3)
+    FloatingActionButton fab3;
+    @BindView(R.id.fab4)
+    FloatingActionButton fab4;
 
 
     private DayAdapter mDayAdapter;
@@ -82,17 +90,12 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick 
         initLocation();
         initView(view);
 
-
         initData();
         initDailyWeather();
 
 
         return view;
     }
-
-
-
-
 
 
 
@@ -103,15 +106,48 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick 
 
     public void initView(View view) {
 
-        fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        fab1 = (FloatingActionButton) view.findViewById(R.id.fab1);
 
-        fab.setOnClickListener(new View.OnClickListener() {
+        fab1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getActivity(), "test", Toast.LENGTH_LONG).show();
+                float h = view.getHeight();//得到主按钮的高度
+                int i=fab2.getVisibility();
+
+                if (i==View.VISIBLE)
+                {
+                    FabAnim.hideView(fab2,h*1.2f);
+                    FabAnim.hideView(fab3,h*2.4f);
+                    FabAnim.hideView(fab4,h*3.6f);
+
+                }else{
+                    FabAnim.showView(fab2,h*1.2f);
+                    FabAnim.showView(fab3,h*2.4f);
+                    FabAnim.showView(fab4,h*3.6f);
+                }
             }
         });
-        fab.setImageResource(R.mipmap.sun);
+        fab1.setImageResource(R.mipmap.sun);
+
+        fab2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), SearchActivity.class));
+            }
+        });
+        fab3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity(),"fab3",Toast.LENGTH_SHORT).show();
+            }
+        });
+        fab4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity(),"fab4",Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
 
@@ -227,5 +263,13 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick 
     public void onItemClick(View view, int postion) {
 
         //点击后没内容
+    }
+
+    @Override
+    public void onClick(View v) {
+
+
+
+
     }
 }
