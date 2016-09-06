@@ -30,7 +30,7 @@ public class SearchActivity extends AppCompatActivity {
 
     private void initToolbar() {
         idSearchToolbar.setTitle("");
-        idSearchToolbar.setNavigationIcon(R.drawable.ic_keyboard_arrow_left_white_24dp);
+        idSearchToolbar.setNavigationIcon(R.drawable.ic_chevron_left_white_24dp);
         setSupportActionBar(idSearchToolbar);
 
         idSearchToolbar.setNavigationOnClickListener(new View.OnClickListener() {

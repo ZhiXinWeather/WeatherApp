@@ -48,4 +48,32 @@ public class Url {
  * */
     public static final String Weather_Daily_Url="https://api.thinkpage.cn/v3/weather/daily.json";
 
+    /**
+     * 城市的天气搜索
+     *根据城市ID、中文、英文、拼音、IP、经纬度搜索匹配的城市。
+     *
+     * **/
+
+    public static final String Weather_Search_Url="https://api.thinkpage.cn/v3/location/search.json";
+
+
+    /**
+     * 生活指数
+     *
+     * 获取指定城市的基本、交通、生活、运动、健康5大类共27项生活指数。目前仅支持中国城市。
+
+     基本类：穿衣、紫外线强度、洗车、旅游、感冒、运动
+
+     交通类：交通、路况
+
+     生活类：晾晒、雨伞、空调开启、啤酒、逛街、夜生活、约会
+
+     运动类：晨练、钓鱼、划船、放风筝
+
+     健康类：过敏、美发、化妆、风寒、防晒、空气污染扩散条件、舒适度、心情
+     *
+     * **/
+
+     public static String Weather_Life_Url="https://api.thinkpage.cn/v3/life/suggestion.json";
+
 }

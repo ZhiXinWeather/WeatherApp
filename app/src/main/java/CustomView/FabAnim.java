@@ -24,7 +24,7 @@ public class FabAnim {
 
         animatorSet.playTogether(translation,alpha);
         animatorSet.setInterpolator(new OvershootInterpolator());//插入器,表示向前甩一定值后再回到原来位置
-        animatorSet.setDuration(600);
+        animatorSet.setDuration(500);
 
         animatorSet.start();
         view.setVisibility(View.VISIBLE);
@@ -46,7 +46,7 @@ public class FabAnim {
         ObjectAnimator translation=ObjectAnimator.ofFloat(view,"TranslationY",from,0);
         ObjectAnimator alpha=ObjectAnimator.ofFloat(view,View.ALPHA,1f,0f);
         animatorset.playTogether(translation,alpha);
-        animatorset.setDuration(600);
+        animatorset.setDuration(300);
         animatorset.start();
         //anim.setInterpolator(new OvershootInterpolator());
         translation.addListener(new Animator.AnimatorListener() {
