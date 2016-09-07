@@ -1,4 +1,6 @@
-package com.example.haiyuan1995.myapplication;
+package Utils;
+
+import com.example.haiyuan1995.myapplication.R;
 
 /**
  * Created by haiyuan 1995 on 2016/8/30.

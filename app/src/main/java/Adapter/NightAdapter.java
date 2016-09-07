@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.haiyuan1995.myapplication.R;
-import com.example.haiyuan1995.myapplication.SelectWeatherImage;
+import Utils.SelectWeatherImage;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

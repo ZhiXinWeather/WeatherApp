@@ -2,6 +2,7 @@ package com.example.haiyuan1995.myapplication;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,6 +29,7 @@ import Adapter.SearchResultAdapter;
 import App.MyApplication;
 import GsonBean.DailyWeatherData;
 import GsonBean.SearchCityData;
+import Utils.HideKeyBoard;
 import WeatherApiURL.Url;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,7 +48,7 @@ public class SearchActivity extends AppCompatActivity {
     @BindView(R.id.id_search_recycleview)
     RecyclerView idSearchRecycleview;
     private ArrayAdapter<String> adapter;
-    private String listText="";
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,41 +64,16 @@ public class SearchActivity extends AppCompatActivity {
         idSearchSearchview.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) { //实际的查询方法,点击搜索后调用
-               //隐藏自动提示的listview
-                adapter.clear();
-                idSearchListview.setVisibility(View.GONE);
-                if (listText.length()>0)
-                {
-                    query=listText;
-                }
-                try {
-                    query = URLEncoder.encode(query, "UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-                String search_weather = Url.Weather_Daily_Url + "?key=" + MyApplication.Key + "&location=" + query + "&start=0&days=5";
-                final StringRequest searchWeather = new StringRequest(StringRequest.Method.GET, search_weather, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String s) {
-                        Gson gson = new Gson();
-                        DailyWeatherData dailyWeatherData = gson.fromJson(s, DailyWeatherData.class);
-                        initWeatherData(dailyWeatherData);
 
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
+                //搜索的方法
+                searchSubmit(query);
 
-                    }
-                });
-                searchWeather.setTag("SearchWeather");
-                MyApplication.getRequestQueue().add(searchWeather);
-                return false;
+                return true;//这两个方法的返回值是用于判断searchview是否有输入内容
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                //一旦搜索字符串被改变，隐藏天气结果的recycleview
+                //一旦搜索字符串被改变，隐藏显示天气的recycleview
                 idSearchRecycleview.setVisibility(View.GONE);
 
                 if (newText.length() > 0 && newText != null) {
@@ -116,7 +93,7 @@ public class SearchActivity extends AppCompatActivity {
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError volleyError) {
-
+                            Snackbar.make(idSearchSearchview,"搜索错误",Snackbar.LENGTH_SHORT).show();
                         }
                     });
                     searchCity.setTag("SearchCity");
@@ -124,12 +101,46 @@ public class SearchActivity extends AppCompatActivity {
 
                 } else {
                     //搜索内容为空时清空列表
+                    if (adapter!=null){
                     adapter.clear();
+                    }
+                    idSearchListview.setVisibility(View.GONE);
                 }
                 return false;
             }
         });
 
+    }
+
+    private void searchSubmit(String query) {
+        //隐藏自动提示的listview
+        adapter.clear();
+        idSearchListview.setVisibility(View.GONE);
+        HideKeyBoard.hide(SearchActivity.this);//隐藏键盘
+
+        try {
+            query = URLEncoder.encode(query, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        //获取7天的天气数据
+        String search_weather = Url.Weather_Daily_Url + "?key=" + MyApplication.Key + "&location=" + query + "&start=0&days=7";
+        final StringRequest searchWeather = new StringRequest(StringRequest.Method.GET, search_weather, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String s) {
+                Gson gson = new Gson();
+                DailyWeatherData dailyWeatherData = gson.fromJson(s, DailyWeatherData.class);
+                initWeatherData(dailyWeatherData);
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                Snackbar.make(idSearchSearchview,"搜索错误",Snackbar.LENGTH_SHORT).show();
+            }
+        });
+        searchWeather.setTag("SearchWeather");
+        MyApplication.getRequestQueue().add(searchWeather);
     }
 
     private void initWeatherData(DailyWeatherData dailyWeatherData) {
@@ -147,7 +158,7 @@ public class SearchActivity extends AppCompatActivity {
         idSearchListview.setVisibility(View.VISIBLE);//如被隐藏显示
         ArrayList<String> arrayList = new ArrayList<>();
         for (int i = 0; i < cityData.getResults().size(); i++) {
-            arrayList.add(cityData.getResults().get(i).getName());
+            arrayList.add(cityData.getResults().get(i).getName()+"\t\t\t\t"+cityData.getResults().get(i).getCountry());
         }
         adapter = new ArrayAdapter<String>(getApplicationContext(),
                 android.R.layout.simple_list_item_1, arrayList);
@@ -156,8 +167,12 @@ public class SearchActivity extends AppCompatActivity {
         idSearchListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                listText= (String) ((TextView)view).getText();
-                Log.i("listview","listview被点击了"+listText);
+                //获取所点击的Item的文字内容，用来搜索
+                String text=(String) ((TextView)view).getText();
+                text=text.substring(0,text.indexOf("\t"));
+
+                searchSubmit(text);
+
             }
         });
     }
@@ -173,5 +188,12 @@ public class SearchActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        MyApplication.getRequestQueue().cancelAll("SearchWeather");
+        MyApplication.getRequestQueue().cancelAll("SearchCity");
     }
 }

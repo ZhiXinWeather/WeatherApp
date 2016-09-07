@@ -25,7 +25,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
 import com.example.haiyuan1995.myapplication.R;
 import com.example.haiyuan1995.myapplication.SearchActivity;
-import com.example.haiyuan1995.myapplication.SelectWeatherImage;
+import Utils.SelectWeatherImage;
 import com.google.gson.Gson;
 
 import java.text.ParseException;

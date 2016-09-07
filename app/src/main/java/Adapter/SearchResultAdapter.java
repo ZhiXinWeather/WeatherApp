@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.haiyuan1995.myapplication.R;
-import com.example.haiyuan1995.myapplication.SelectWeatherImage;
+import Utils.SelectWeatherImage;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -19,7 +19,7 @@ import java.util.Date;
 import GsonBean.DailyWeatherData;
 
 /**
- * Created by haiyuan1995 on 2016/9/7.
+ * 搜索结果的Recycle view的适配器
  */
 
 public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapter.MyViewHolder>{
@@ -66,6 +66,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         if (apm==0||(apm==1&&isNight<18)){
             holder.tv_weather.setText(mDailyWeatherData.getResults().get(0).getDaily().get(position).getText_day());
             holder.tv_date.setText(format.format(date));
+            holder.tv_wind_scale.setText("风力:"+mDailyWeatherData.getResults().get(0).getDaily().get(position).getWind_scale()+"级");
             holder.tv_city.setText(mDailyWeatherData.getResults().get(0).getLocation().getName());
             holder.tv_temperature.setText(mDailyWeatherData.getResults().get(0).getDaily().get(position).getHigh());
             holder.tv_wind_direction.setText(mDailyWeatherData.getResults().get(0).getDaily().get(position).getWind_direction());
@@ -77,6 +78,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         }else if(apm==1&&isNight >= 18) {
             holder.tv_weather.setText(mDailyWeatherData.getResults().get(0).getDaily().get(position).getText_night());
             holder.tv_date.setText(format.format(date));
+            holder.tv_wind_scale.setText("风力:"+mDailyWeatherData.getResults().get(0).getDaily().get(position).getWind_scale()+"级");
             holder.tv_city.setText(mDailyWeatherData.getResults().get(0).getLocation().getName());
             holder.tv_temperature.setText(mDailyWeatherData.getResults().get(0).getDaily().get(position).getLow());
             holder.tv_wind_direction.setText(mDailyWeatherData.getResults().get(0).getDaily().get(position).getWind_direction());
@@ -98,7 +100,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         TextView tv_city;
         TextView tv_weather;
         TextView tv_wind_direction;
-        TextView tv_future_temperature;
+        TextView tv_wind_scale;
         TextView tv_date;
 
         ImageView iv_weather_image;
@@ -110,7 +112,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
             tv_weather= (TextView) itemView.findViewById(R.id.id_search_item_weather);
             tv_wind_direction= (TextView) itemView.findViewById(R.id.id_search_item_wind_direction);
             tv_date= (TextView) itemView.findViewById(R.id.id_search_item_date);
-            tv_future_temperature= (TextView) itemView.findViewById(R.id.id_search_item_future_temperature);
+            tv_wind_scale= (TextView) itemView.findViewById(R.id.id_search_item_wind_scale);
             iv_weather_image= (ImageView) itemView.findViewById(R.id.id_search_item_weather_image);
             iv_background= (ImageView) itemView.findViewById(R.id.id_search_item_imageview);
         }
