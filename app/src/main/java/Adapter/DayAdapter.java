@@ -46,7 +46,7 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.MyViewHolder> {
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View view=mLayoutInflater.inflate(R.layout.recycleview_item,parent,false);//测试用card item layout
+        View view=mLayoutInflater.inflate(R.layout.recycleview_item,parent,false);
         MyViewHolder myViewHolder=new MyViewHolder(view,recyitemonclick);
         return myViewHolder;
     }

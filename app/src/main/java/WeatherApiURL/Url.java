@@ -53,8 +53,7 @@ public class Url {
      *根据城市ID、中文、英文、拼音、IP、经纬度搜索匹配的城市。
      *
      * **/
-
-    public static final String Weather_Search_Url="https://api.thinkpage.cn/v3/location/search.json";
+    public static final String Weather_SearchCity_Url="https://api.thinkpage.cn/v3/location/search.json";
 
 
     /**

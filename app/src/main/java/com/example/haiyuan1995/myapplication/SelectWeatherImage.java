@@ -93,6 +93,32 @@ public class SelectWeatherImage {
         }
         return resourceID;
     }
-
+    public static int selectBackground(String weatherCode){
+        int resourceID = R.mipmap.monday;//默认多云
+        switch (weatherCode) {
+            case "星期一":
+                resourceID = R.mipmap.monday;
+                break;
+            case "星期二":
+                resourceID =R.mipmap.tuesday;
+                break;
+            case "星期三":
+                resourceID = R.mipmap.wednesday;
+                break;
+            case "星期四":
+                resourceID = R.mipmap.thursday;
+                break;
+            case "星期五":
+                resourceID = R.mipmap.friday;
+                break;
+            case "星期六":
+                resourceID = R.mipmap.saturday;
+                break;
+            case "星期日":
+                resourceID = R.mipmap.sunday;
+                break;
+        }
+        return resourceID;
+    }
 
 }

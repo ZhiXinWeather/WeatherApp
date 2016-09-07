@@ -11,8 +11,8 @@ import com.android.volley.toolbox.Volley;
 
 public class MyApplication extends Application {
     //弟弟的账号
-    public static final String Key = "b2cusgfnnsthc4sz";
-    public static final String Api_id = "UB4E270B6C";
+    public static final String Key = "nv2semkinlclh1ld";
+    public static final String Api_id = "U5CC4F2898";
 
 
     private static RequestQueue mRequestQueue;
