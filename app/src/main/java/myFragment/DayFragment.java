@@ -7,10 +7,12 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -25,7 +27,6 @@ import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
 import com.example.haiyuan1995.myapplication.R;
 import com.example.haiyuan1995.myapplication.SearchActivity;
-import Utils.SelectWeatherImage;
 import com.google.gson.Gson;
 
 import java.text.ParseException;
@@ -37,6 +38,7 @@ import CustomView.FabAnim;
 import CustomView.NumberView;
 import GsonBean.DailyWeatherData;
 import GsonBean.WeatherNowData;
+import Utils.SelectWeatherImage;
 import WeatherApiURL.Url;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -148,6 +150,24 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick,
             }
         });
 
+        idMainRecyclerview.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                SwipeRefreshLayout idMainRefresh= (SwipeRefreshLayout) getActivity().findViewById(R.id.id_main_refresh);
+                switch (event.getAction())
+                {
+                    case MotionEvent.ACTION_MOVE:
+                        idMainRefresh.setEnabled(false);
+                        break;
+                    case MotionEvent.ACTION_CANCEL:
+                    case MotionEvent.ACTION_UP:
+                        idMainRefresh.setEnabled(true);
+                        break;
+                }
+                return false;
+            }
+        });
+
     }
 
 
@@ -239,19 +259,27 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick,
         int resourceId = SelectWeatherImage.selectImageView(data.getResults().get(0).getNow().getCode());
         Glide.with(getActivity()).load(resourceId).into(idMainImageview);
 
+        //发送一条广播用于显示通知栏
+        Intent  intent=new Intent();
+        intent.putExtra("city",data.getResults().get(0).getLocation().getName());
+        intent.putExtra("content",data.getResults().get(0).getNow().getText()+"\t\t\t\t"+data.getResults().get(0).getNow().getTemperature()+"℃");
+        intent.putExtra("code",data.getResults().get(0).getNow().getCode());
+        intent.setAction("Notification");
+        getActivity().sendBroadcast(intent);
     }
 
     public void initAdapter(DailyWeatherData dailyWeatherData) {
         mDayAdapter = new DayAdapter(getActivity(), dailyWeatherData);
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(3,StaggeredGridLayoutManager.HORIZONTAL);
         mDayAdapter.setRecyItemOnclick(this);
 
-        idMainRecyclerview.setLayoutManager(linearLayoutManager);
+        idMainRecyclerview.setLayoutManager(staggeredGridLayoutManager);
         idMainRecyclerview.setAdapter(mDayAdapter);
 
 
     }
+
 
     @Override
     public void onDestroy() {
@@ -267,8 +295,6 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick,
 
     @Override
     public void onClick(View v) {
-
-
 
 
     }

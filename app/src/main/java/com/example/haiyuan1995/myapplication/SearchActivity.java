@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -136,7 +135,7 @@ public class SearchActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
-                Snackbar.make(idSearchSearchview,"搜索错误",Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(idSearchSearchview,"搜索错误,暂无数据",Snackbar.LENGTH_SHORT).show();
             }
         });
         searchWeather.setTag("SearchWeather");

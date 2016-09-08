@@ -29,13 +29,7 @@ public class MyApplication extends Application {
             status_bar_height = getResources().getDimensionPixelSize(resourceId);
         }
 
-
     }
-
-
-
-
-
 
     public static RequestQueue getRequestQueue()
     {

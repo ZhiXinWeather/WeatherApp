@@ -4,7 +4,7 @@ package myFragment;
 
 
 import android.graphics.Color;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -35,11 +35,11 @@ private RelativeLayout activityMain;
     public void initAdapter(DailyWeatherData dailyWeatherData) {
         super.initAdapter(dailyWeatherData);
         nightAdapter = new NightAdapter(getActivity(), dailyWeatherData);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(3,StaggeredGridLayoutManager.HORIZONTAL);
 //        GridLayoutManager gridLayoutManager=new GridLayoutManager(this,2,GridLayoutManager.VERTICAL,false);
         nightAdapter.setRecyItemOnclick(this);
 
-        idMainRecyclerview.setLayoutManager(linearLayoutManager);
+        idMainRecyclerview.setLayoutManager(staggeredGridLayoutManager);
         idMainRecyclerview.setAdapter(nightAdapter);
 
     }

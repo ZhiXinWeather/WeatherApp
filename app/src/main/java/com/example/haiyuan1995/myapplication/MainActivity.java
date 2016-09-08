@@ -1,6 +1,12 @@
 package com.example.haiyuan1995.myapplication;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.location.Location;
@@ -8,20 +14,16 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.GravityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.view.MenuItem;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,21 +31,17 @@ import java.util.List;
 import Adapter.MyFragmentPagerAdapter;
 import Anim.AlphaTransformer;
 import CustomView.NumberView;
+import Utils.SelectWeatherImage;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import myFragment.DayFragment;
 import myFragment.NightFragment;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity{
 
 
     @BindView(R.id.id_fragment_viewpager)
     ViewPager idFragmentViewpager;
-    @BindView(R.id.nav_view)
-    NavigationView navView;
-    @BindView(R.id.drawer_layout)
-    DrawerLayout drawerLayout;
     @BindView(R.id.id_main_refresh)
     SwipeRefreshLayout idMainRefresh;
 
@@ -55,7 +53,8 @@ public class MainActivity extends AppCompatActivity
 
     private static String jingweidu;
     private MyFragmentPagerAdapter myFragmentPagerAdapter;
-
+    private  NotificationManager manager;
+   private  MyBroadcastReceive broadcastReceive;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,8 +63,11 @@ public class MainActivity extends AppCompatActivity
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);//让toolbar覆盖到状态栏上
 
         ButterKnife.bind(this);
+
         initLocation();
-//        initView();
+
+         initBroadcastReciver();
+
         initFragmentViewPager();
 
 
@@ -82,10 +84,34 @@ public class MainActivity extends AppCompatActivity
               },2000);
           }
       });
-//        initData();
-//        initDailyWeather();
 
 
+    }
+
+    private void initBroadcastReciver() {
+        //动态注册广播接收器
+        broadcastReceive=new MyBroadcastReceive();
+        IntentFilter intentFilter=new IntentFilter("Notification");
+        registerReceiver(broadcastReceive,intentFilter);
+    }
+
+    private void initNotification(Intent intent) {
+        String title=intent.getStringExtra("city");
+        String content=intent.getStringExtra("content");
+        String code=intent.getStringExtra("code");
+        int iconID= SelectWeatherImage.selectImageView(code);
+
+      manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        NotificationCompat.Builder mBuilder= new NotificationCompat.Builder(this);
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+        mBuilder.setContentTitle(title).setContentText(content).setContentIntent(pendingIntent)
+                .setWhen(System.currentTimeMillis()).setSmallIcon(iconID);
+
+        Notification notification=mBuilder.build();
+        notification.flags=Notification.FLAG_NO_CLEAR;
+        manager.notify(1,notification);
+        Log.d("MyService", "onCreate executed");
     }
 
     private void initLocation() {
@@ -164,7 +190,7 @@ public class MainActivity extends AppCompatActivity
         DayFragment dayFragment = new DayFragment();
         NightFragment nightFragment = new NightFragment();
         SharedPreferences sp = getSharedPreferences("config", MODE_PRIVATE);
-        Editor editor = sp.edit();
+        final Editor editor = sp.edit();
         editor.putString("locationStr", jingweidu);
         editor.commit();
 //
@@ -186,7 +212,8 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onPageSelected(int position) {
-                NumberView n = (NumberView) list.get(position).getView().findViewById(R.id.id_main_temperature);
+
+                NumberView n = (NumberView) myFragmentPagerAdapter.getItem(position).getView().findViewById(R.id.id_main_temperature);
                 n.showNumberWithAnimation();
             }
 
@@ -194,6 +221,8 @@ public class MainActivity extends AppCompatActivity
             public void onPageScrollStateChanged(int state) {
             }
         });
+
+
         /**
          * 解决viewpager和SwipeRefreshLayout下拉冲突的问题，
          * viewpager在move的时候SwipeRefreshLayout
@@ -219,44 +248,6 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -265,7 +256,16 @@ public class MainActivity extends AppCompatActivity
 
             locationManager.removeUpdates(locationListener);
         }
+        unregisterReceiver(broadcastReceive);
+        manager.cancelAll();
     }
 
 
+    class MyBroadcastReceive extends BroadcastReceiver{
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            initNotification(intent);
+        }
+    }
 }
