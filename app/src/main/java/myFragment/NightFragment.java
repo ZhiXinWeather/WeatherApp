@@ -1,10 +1,8 @@
 package myFragment;
 
 
-
-
 import android.graphics.Color;
-import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -13,6 +11,7 @@ import com.example.haiyuan1995.myapplication.R;
 import Adapter.NightAdapter;
 import GsonBean.DailyWeatherData;
 import GsonBean.WeatherNowData;
+import RecycleViewAnim.SlideInRightAnimatorAdapter;
 
 
 /**
@@ -35,12 +34,12 @@ private RelativeLayout activityMain;
     public void initAdapter(DailyWeatherData dailyWeatherData) {
         super.initAdapter(dailyWeatherData);
         nightAdapter = new NightAdapter(getActivity(), dailyWeatherData);
-        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(3,StaggeredGridLayoutManager.HORIZONTAL);
-//        GridLayoutManager gridLayoutManager=new GridLayoutManager(this,2,GridLayoutManager.VERTICAL,false);
+        GridLayoutManager gridLayoutManager=new GridLayoutManager(getContext(),3,GridLayoutManager.HORIZONTAL,false);
+        SlideInRightAnimatorAdapter rightAnimatorAdapter=new SlideInRightAnimatorAdapter(nightAdapter,idMainRecyclerview);
+        rightAnimatorAdapter.getViewAnimator().setInitialDelayMillis(500);
         nightAdapter.setRecyItemOnclick(this);
-
-        idMainRecyclerview.setLayoutManager(staggeredGridLayoutManager);
-        idMainRecyclerview.setAdapter(nightAdapter);
+        idMainRecyclerview.setLayoutManager(gridLayoutManager);
+        idMainRecyclerview.setAdapter(rightAnimatorAdapter);
 
     }
 

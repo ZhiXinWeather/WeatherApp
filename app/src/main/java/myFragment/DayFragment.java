@@ -8,8 +8,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -38,6 +38,7 @@ import CustomView.FabAnim;
 import CustomView.NumberView;
 import GsonBean.DailyWeatherData;
 import GsonBean.WeatherNowData;
+import RecycleViewAnim.SlideInRightAnimatorAdapter;
 import Utils.SelectWeatherImage;
 import WeatherApiURL.Url;
 import butterknife.BindView;
@@ -95,7 +96,6 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick,
         initData();
         initDailyWeather();
 
-
         return view;
     }
 
@@ -116,16 +116,12 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick,
                 float h = view.getHeight();//得到主按钮的高度
                 int i=fab2.getVisibility();
 
-                if (i==View.VISIBLE)
+                if (i==View.VISIBLE)//显示和隐藏按钮
                 {
-                    FabAnim.hideView(fab2,h*1.2f);
-                    FabAnim.hideView(fab3,h*2.4f);
-                    FabAnim.hideView(fab4,h*3.6f);
+                    hideFab(h);
 
                 }else{
-                    FabAnim.showView(fab2,h*1.2f);
-                    FabAnim.showView(fab3,h*2.4f);
-                    FabAnim.showView(fab4,h*3.6f);
+                    showFab(h);
                 }
             }
         });
@@ -168,6 +164,17 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick,
             }
         });
 
+    }
+    public void hideFab(float h) {
+        FabAnim.hideView(fab2,h*1.2f);
+        FabAnim.hideView(fab3,h*2.4f);
+        FabAnim.hideView(fab4,h*3.6f);
+    }
+
+    public void showFab(float h) {
+        FabAnim.showView(fab2,h*1.2f);
+        FabAnim.showView(fab3,h*2.4f);
+        FabAnim.showView(fab4,h*3.6f);
     }
 
 
@@ -271,13 +278,12 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick,
     public void initAdapter(DailyWeatherData dailyWeatherData) {
         mDayAdapter = new DayAdapter(getActivity(), dailyWeatherData);
 
-        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(3,StaggeredGridLayoutManager.HORIZONTAL);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),3,GridLayoutManager.HORIZONTAL,false);
         mDayAdapter.setRecyItemOnclick(this);
-
-        idMainRecyclerview.setLayoutManager(staggeredGridLayoutManager);
-        idMainRecyclerview.setAdapter(mDayAdapter);
-
-
+        SlideInRightAnimatorAdapter rightAnimatorAdapter=new SlideInRightAnimatorAdapter(mDayAdapter,idMainRecyclerview);
+        rightAnimatorAdapter.getViewAnimator().setInitialDelayMillis(500);
+        idMainRecyclerview.setLayoutManager(gridLayoutManager);
+        idMainRecyclerview.setAdapter(rightAnimatorAdapter);
     }
 
 
@@ -298,4 +304,5 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick,
 
 
     }
+
 }

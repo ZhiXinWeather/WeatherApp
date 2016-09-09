@@ -28,6 +28,7 @@ import Adapter.SearchResultAdapter;
 import App.MyApplication;
 import GsonBean.DailyWeatherData;
 import GsonBean.SearchCityData;
+import RecycleViewAnim.ScaleInAnimatorAdapter;
 import Utils.HideKeyBoard;
 import WeatherApiURL.Url;
 import butterknife.BindView;
@@ -146,9 +147,11 @@ public class SearchActivity extends AppCompatActivity {
 
         SearchResultAdapter resultAdapter = new SearchResultAdapter(SearchActivity.this, dailyWeatherData);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(SearchActivity.this, LinearLayoutManager.HORIZONTAL, false);
+        ScaleInAnimatorAdapter scaleInAnimatorAdapter=new ScaleInAnimatorAdapter(resultAdapter,idSearchRecycleview);
+        scaleInAnimatorAdapter.getViewAnimator().setInitialDelayMillis(500);
         idSearchRecycleview.setVisibility(View.VISIBLE);
         idSearchRecycleview.setLayoutManager(linearLayoutManager);
-        idSearchRecycleview.setAdapter(resultAdapter);
+        idSearchRecycleview.setAdapter(scaleInAnimatorAdapter);
 
     }
 

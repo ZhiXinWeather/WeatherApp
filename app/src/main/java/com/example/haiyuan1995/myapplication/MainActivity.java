@@ -30,7 +30,6 @@ import java.util.List;
 
 import Adapter.MyFragmentPagerAdapter;
 import Anim.AlphaTransformer;
-import CustomView.NumberView;
 import Utils.SelectWeatherImage;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -207,14 +206,11 @@ public class MainActivity extends AppCompatActivity{
         idFragmentViewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
             }
 
             @Override
             public void onPageSelected(int position) {
 
-                NumberView n = (NumberView) myFragmentPagerAdapter.getItem(position).getView().findViewById(R.id.id_main_temperature);
-                n.showNumberWithAnimation();
             }
 
             @Override
