@@ -25,6 +25,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
+import com.example.haiyuan1995.myapplication.AirActivity;
 import com.example.haiyuan1995.myapplication.R;
 import com.example.haiyuan1995.myapplication.SearchActivity;
 import com.google.gson.Gson;
@@ -142,7 +143,7 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick,
         fab4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(),"fab4",Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getActivity(), AirActivity.class));
             }
         });
 

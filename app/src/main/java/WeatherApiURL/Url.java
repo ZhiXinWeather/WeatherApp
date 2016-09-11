@@ -56,6 +56,22 @@ public class Url {
     public static final String Weather_SearchCity_Url="https://api.thinkpage.cn/v3/location/search.json";
 
 
+/**
+ * 空气质量
+ *
+ * **/
+    public static final String Weather_Air_Url="https://api.thinkpage.cn/v3/air/now.json";
+
+
+
+    /**
+     * 空气质量排行榜
+     *
+     * **/
+    public static final String Weather_Air_Ranking_Url="https://api.thinkpage.cn/v3/air/ranking.json";
+
+
+
     /**
      * 生活指数
      *

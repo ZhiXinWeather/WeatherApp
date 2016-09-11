@@ -65,7 +65,7 @@
                 app:layout_anchorGravity="right|end"
                 android:layout_gravity="right"
                 app:borderWidth="0dp"
-                android:src="@drawable/heavy_rain"/>
+                android:src="@drawable/ic_cloud_queue_white_24dp"/>
 
             <RelativeLayout
                 android:id="@+id/activity_main"

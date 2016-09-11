@@ -57,10 +57,10 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.MyViewHolder> {
  * @hour 小时
  * @apm  apm=0 表示上午，apm=1表示下午。
  * */
-            Calendar mCalendar=Calendar.getInstance();
-              long timemillis=System.currentTimeMillis();
-            mCalendar.setTimeInMillis(timemillis);
-            int isNight=mCalendar.get(Calendar.HOUR_OF_DAY);
+        Calendar mCalendar=Calendar.getInstance();
+        long timemillis=System.currentTimeMillis();
+        mCalendar.setTimeInMillis(timemillis);
+        int isNight=mCalendar.get(Calendar.HOUR_OF_DAY);
         String weatherdate=mDailyWeatherData.getResults().get(0).getDaily().get(position).getDate();
         int year=Integer.valueOf(weatherdate.substring(0,4));
         int month=Integer.valueOf(weatherdate.substring(5,7))-1;//月份要减1
@@ -68,37 +68,14 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.MyViewHolder> {
         Date date=new Date(year,month,day);
         SimpleDateFormat  format=new SimpleDateFormat("EEEE");//转换为星期几
 
-//        int apm=mCalendar.get(Calendar.AM_PM);
-//            if (apm==0){
-//                holder.tv_tianqi.setText(mDailyWeatherData.getResults().get(0).getDaily().get(position).getText_day());
-//                holder.tv_date.setText(format.format(date));
-//                holder.tv_wendu.setText(mDailyWeatherData.getResults().get(0).getDaily().get(position).getHigh()+"℃");
-//                String weatherCode=mDailyWeatherData.getResults().get(0).getDaily().get(position).getCode_day();
-//
-//                int resourceID=SelectWeatherImage.selectImageView(weatherCode);
-//                Glide.with(mContext).load(resourceID).into(holder.iv_weather_png);
-//
-//            }else if(apm==1){
-//                if (isNight>=18)//如果是下午并且过了18点，则显示夜间数据
-//                {
-//                    holder.tv_tianqi.setText(mDailyWeatherData.getResults().get(0).getDaily().get(position).getText_night());
-//                    holder.tv_date.setText(format.format(date));
-//                    holder.tv_wendu.setText(mDailyWeatherData.getResults().get(0).getDaily().get(position).getLow() + "℃");
-//                    String weatherCode = mDailyWeatherData.getResults().get(0).getDaily().get(position).getCode_night();
-//                    int resourceID = SelectWeatherImage.selectImageView(weatherCode);
-//                    Glide.with(mContext).load(resourceID).into(holder.iv_weather_png);
-//
-//                }else{//否则加载白天数据
-                    holder.tv_tianqi.setText(mDailyWeatherData.getResults().get(0).getDaily().get(position).getText_day());
-                    holder.tv_date.setText(format.format(date));
-                    holder.tv_wendu.setText(mDailyWeatherData.getResults().get(0).getDaily().get(position).getHigh()+"℃");
-                    String weatherCode=mDailyWeatherData.getResults().get(0).getDaily().get(position).getCode_day();
 
-                    int resourceID=SelectWeatherImage.selectImageView(weatherCode);
-                    Glide.with(mContext).load(resourceID).into(holder.iv_weather_png);
-//                }
-//        }
+        holder.tv_tianqi.setText(mDailyWeatherData.getResults().get(0).getDaily().get(position).getText_day());
+        holder.tv_date.setText(format.format(date));
+        holder.tv_wendu.setText(mDailyWeatherData.getResults().get(0).getDaily().get(position).getHigh()+"℃");
+        String weatherCode=mDailyWeatherData.getResults().get(0).getDaily().get(position).getCode_day();
 
+        int resourceID=SelectWeatherImage.selectImageView(weatherCode);
+        Glide.with(mContext).load(resourceID).into(holder.iv_weather_png);
 
     }
 

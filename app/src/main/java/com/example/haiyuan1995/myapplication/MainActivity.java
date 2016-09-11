@@ -20,10 +20,12 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +35,7 @@ import Anim.AlphaTransformer;
 import Utils.SelectWeatherImage;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import myFragment.ChartFragment;
 import myFragment.DayFragment;
 import myFragment.NightFragment;
 
@@ -53,7 +56,10 @@ public class MainActivity extends AppCompatActivity{
     private static String jingweidu;
     private MyFragmentPagerAdapter myFragmentPagerAdapter;
     private  NotificationManager manager;
-   private  MyBroadcastReceive broadcastReceive;
+    private  MyBroadcastReceive broadcastReceive;
+
+    private long EXIT_TIME=0;//点击两个返回键之间的时间
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,24 +71,24 @@ public class MainActivity extends AppCompatActivity{
 
         initLocation();
 
-         initBroadcastReciver();
+        initBroadcastReciver();
 
         initFragmentViewPager();
 
 
         idMainRefresh.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light, android.R.color.holo_orange_light, android.R.color.holo_green_light);
-      idMainRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-          @Override
-          public void onRefresh() {
-              new Handler().postDelayed(new Runnable() {
-                  @Override
-                  public void run() {
-                      myFragmentPagerAdapter.notifyDataSetChanged();
-                      idMainRefresh.setRefreshing(false);
-                  }
-              },2000);
-          }
-      });
+        idMainRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        myFragmentPagerAdapter.notifyDataSetChanged();
+                        idMainRefresh.setRefreshing(false);
+                    }
+                },2000);
+            }
+        });
 
 
     }
@@ -100,7 +106,7 @@ public class MainActivity extends AppCompatActivity{
         String code=intent.getStringExtra("code");
         int iconID= SelectWeatherImage.selectImageView(code);
 
-      manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         NotificationCompat.Builder mBuilder= new NotificationCompat.Builder(this);
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
@@ -188,6 +194,8 @@ public class MainActivity extends AppCompatActivity{
         list = new ArrayList<Fragment>();
         DayFragment dayFragment = new DayFragment();
         NightFragment nightFragment = new NightFragment();
+        ChartFragment chartFragment=new ChartFragment();
+
         SharedPreferences sp = getSharedPreferences("config", MODE_PRIVATE);
         final Editor editor = sp.edit();
         editor.putString("locationStr", jingweidu);
@@ -196,6 +204,7 @@ public class MainActivity extends AppCompatActivity{
 
         list.add(dayFragment);
         list.add(nightFragment);
+        list.add(chartFragment);
 
         myFragmentPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), list);
         idFragmentViewpager.setAdapter(myFragmentPagerAdapter);
@@ -210,7 +219,7 @@ public class MainActivity extends AppCompatActivity{
 
             @Override
             public void onPageSelected(int position) {
-
+                myFragmentPagerAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -263,5 +272,27 @@ public class MainActivity extends AppCompatActivity{
         public void onReceive(Context context, Intent intent) {
             initNotification(intent);
         }
+    }
+
+
+    /**
+     * 监听返回键是否被按下**/
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode==KeyEvent.KEYCODE_BACK&&event.getAction()==KeyEvent.ACTION_DOWN)//返回键按键被按下
+        {
+            //System.currentTimeMillis()  当前时间与协调世界时 1970 年 1 月 1 日午夜之间的时间差（以毫秒为单位测量）。
+            if(System.currentTimeMillis()-EXIT_TIME>2500)//第一次按下必定通过，第二次按下则判断两次返回键的时间差
+            {
+                Toast.makeText(this, "再按一次返回键退出程序", Toast.LENGTH_SHORT).show();
+                EXIT_TIME=System.currentTimeMillis();//吧Exit_Time设置为当前时间
+            }
+            else
+            {
+                finish();
+            }
+            return false;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

@@ -43,8 +43,6 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        String now_hight=mDailyWeatherData.getResults().get(0).getDaily().get(0).getHigh();
-        String now_low=mDailyWeatherData.getResults().get(0).getDaily().get(0).getLow();
 /**获取时间数据
  * @hour 小时
  * @apm  apm=0 表示上午，apm=1表示下午。
@@ -62,27 +60,29 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
 
         int backgroundID=SelectWeatherImage.selectBackground(format.format(date));
 
+        DailyWeatherData.ResultsBean.DailyBean dailyBean=mDailyWeatherData.getResults().get(0).getDaily().get(position);
+
         int apm=mCalendar.get(Calendar.AM_PM);
         if (apm==0||(apm==1&&isNight<18)){
-            holder.tv_weather.setText(mDailyWeatherData.getResults().get(0).getDaily().get(position).getText_day());
+            holder.tv_weather.setText(dailyBean.getText_day());
             holder.tv_date.setText(format.format(date));
-            holder.tv_wind_scale.setText("风力:"+mDailyWeatherData.getResults().get(0).getDaily().get(position).getWind_scale()+"级");
+            holder.tv_wind_scale.setText("风力:"+dailyBean.getWind_scale()+"级");
             holder.tv_city.setText(mDailyWeatherData.getResults().get(0).getLocation().getName());
-            holder.tv_temperature.setText(mDailyWeatherData.getResults().get(0).getDaily().get(position).getHigh());
-            holder.tv_wind_direction.setText(mDailyWeatherData.getResults().get(0).getDaily().get(position).getWind_direction());
-            String weatherCode=mDailyWeatherData.getResults().get(0).getDaily().get(position).getCode_day();
+            holder.tv_temperature.setText(dailyBean.getHigh());
+            holder.tv_wind_direction.setText(dailyBean.getWind_direction());
+            String weatherCode=dailyBean.getCode_day();
             int resourceID= SelectWeatherImage.selectImageView(weatherCode);
             Glide.with(mContext).load(resourceID).into(holder.iv_weather_image);
             Glide.with(mContext).load(backgroundID).into(holder.iv_background);
 
         }else if(apm==1&&isNight >= 18) {
-            holder.tv_weather.setText(mDailyWeatherData.getResults().get(0).getDaily().get(position).getText_night());
+            holder.tv_weather.setText(dailyBean.getText_night());
             holder.tv_date.setText(format.format(date));
-            holder.tv_wind_scale.setText("风力:"+mDailyWeatherData.getResults().get(0).getDaily().get(position).getWind_scale()+"级");
+            holder.tv_wind_scale.setText("风力:"+dailyBean.getWind_scale()+"级");
             holder.tv_city.setText(mDailyWeatherData.getResults().get(0).getLocation().getName());
-            holder.tv_temperature.setText(mDailyWeatherData.getResults().get(0).getDaily().get(position).getLow());
-            holder.tv_wind_direction.setText(mDailyWeatherData.getResults().get(0).getDaily().get(position).getWind_direction());
-            String weatherCode = mDailyWeatherData.getResults().get(0).getDaily().get(position).getCode_night();
+            holder.tv_temperature.setText(dailyBean.getLow());
+            holder.tv_wind_direction.setText(dailyBean.getWind_direction());
+            String weatherCode = dailyBean.getCode_night();
             int resourceID = SelectWeatherImage.selectImageView(weatherCode);
             Glide.with(mContext).load(resourceID).into(holder.iv_weather_image);
             Glide.with(mContext).load(backgroundID).into(holder.iv_background);
