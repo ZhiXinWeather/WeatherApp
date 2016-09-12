@@ -36,6 +36,7 @@ import butterknife.ButterKnife;
 
 /**
  * Created by haiyuan 1995 on 2016/9/5.
+ * 城市搜索界面
  */
 
 public class SearchActivity extends AppCompatActivity {
@@ -76,7 +77,7 @@ public class SearchActivity extends AppCompatActivity {
                 //一旦搜索字符串被改变，隐藏显示天气的recycleview
                 idSearchRecycleview.setVisibility(View.GONE);
 
-                if (newText.length() > 0 && newText != null) {
+                if (newText.length() > 0) {
                     try {
                         newText = URLEncoder.encode(newText, "UTF-8");
                     } catch (UnsupportedEncodingException e) {
@@ -114,7 +115,6 @@ public class SearchActivity extends AppCompatActivity {
 
     private void searchSubmit(String query) {
         //隐藏自动提示的listview
-        adapter.clear();
         idSearchListview.setVisibility(View.GONE);
         HideKeyBoard.hide(SearchActivity.this);//隐藏键盘
 

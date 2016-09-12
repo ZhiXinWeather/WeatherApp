@@ -119,7 +119,10 @@ public class AirActivity extends AppCompatActivity {
                 finish();
             }
         });
-
+        //在nestedscroll中添加 android:fillViewport="true"
+        //然后关闭recycleview的滑动，可以解决嵌套的冲突
+        idAirRecyclerview.setNestedScrollingEnabled(false);
+        idAirRecyclerviewRanking.setNestedScrollingEnabled(false);
         collapsingToolbarLayout.setTitle("");
 
     }

@@ -1,6 +1,8 @@
 package myFragment;
 
+import android.animation.Animator;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -14,7 +16,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -49,7 +53,7 @@ import butterknife.ButterKnife;
  * 主界面的fragment
  */
 
-public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick,View.OnClickListener {
+public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick, View.OnClickListener {
 
 
     @BindView(R.id.id_main_path)
@@ -60,8 +64,7 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick,
     ImageView idMainImageview;
     @BindView(R.id.id_main_tianqi)
     TextView idMainTianqi;
-    @BindView(R.id.activity_main)
-    RelativeLayout activityMain;
+
     @BindView(R.id.id_main_recyclerview)
     RecyclerView idMainRecyclerview;
     @BindView(R.id.content_main)
@@ -80,6 +83,12 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick,
     FloatingActionButton fab3;
     @BindView(R.id.fab4)
     FloatingActionButton fab4;
+    @BindView(R.id.activity_main_relativelayout)
+    RelativeLayout activityMainRelativelayout;
+    @BindView(R.id.id_main_wind_direction)
+    TextView idMainWindDirection;
+    @BindView(R.id.id_main_humidity)
+    TextView idMainHumidity;
 
 
     private DayAdapter mDayAdapter;
@@ -97,9 +106,9 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick,
         initData();
         initDailyWeather();
 
+
         return view;
     }
-
 
 
     private void initLocation() {
@@ -108,20 +117,57 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick,
     }
 
     public void initView(View view) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            view.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                @Override
+                public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                    v.removeOnLayoutChangeListener(this);
+                    fab1.setVisibility(View.GONE);
 
-        fab1 = (FloatingActionButton) view.findViewById(R.id.fab1);
+                    float finalRadius = (float) Math.hypot(fab1.getWidth(), fab1.getHeight());
+                    Animator animator = ViewAnimationUtils.createCircularReveal(fab1, fab1.getWidth() / 2, fab1.getHeight() / 2, 0, finalRadius);
+                    animator.setInterpolator(new AccelerateDecelerateInterpolator());
+                    animator.setDuration(800);
+                    animator.addListener(new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                            fab1.setVisibility(View.VISIBLE);
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationCancel(Animator animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animator animation) {
+
+                        }
+                    });
+                    animator.setStartDelay(500);//延迟动画
+                    animator.start();
+                }
+            });
+        } else {
+            fab1.setVisibility(View.VISIBLE);
+        }
 
         fab1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 float h = view.getHeight();//得到主按钮的高度
-                int i=fab2.getVisibility();
+                int i = fab2.getVisibility();
 
-                if (i==View.VISIBLE)//显示和隐藏按钮
+                if (i == View.VISIBLE)//显示和隐藏按钮
                 {
                     hideFab(h);
 
-                }else{
+                } else {
                     showFab(h);
                 }
             }
@@ -137,7 +183,7 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick,
         fab3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(),"fab3",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "fab3", Toast.LENGTH_SHORT).show();
             }
         });
         fab4.setOnClickListener(new View.OnClickListener() {
@@ -150,9 +196,8 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick,
         idMainRecyclerview.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                SwipeRefreshLayout idMainRefresh= (SwipeRefreshLayout) getActivity().findViewById(R.id.id_main_refresh);
-                switch (event.getAction())
-                {
+                SwipeRefreshLayout idMainRefresh = (SwipeRefreshLayout) getActivity().findViewById(R.id.id_main_refresh);
+                switch (event.getAction()) {
                     case MotionEvent.ACTION_MOVE:
                         idMainRefresh.setEnabled(false);
                         break;
@@ -165,17 +210,20 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick,
             }
         });
 
+
     }
+
+
     public void hideFab(float h) {
-        FabAnim.hideView(fab2,h*1.2f);
-        FabAnim.hideView(fab3,h*2.4f);
-        FabAnim.hideView(fab4,h*3.6f);
+        FabAnim.hideView(fab2, h * 1.2f);
+        FabAnim.hideView(fab3, h * 2.4f);
+        FabAnim.hideView(fab4, h * 3.6f);
     }
 
     public void showFab(float h) {
-        FabAnim.showView(fab2,h*1.2f);
-        FabAnim.showView(fab3,h*2.4f);
-        FabAnim.showView(fab4,h*3.6f);
+        FabAnim.showView(fab2, h * 1.2f);
+        FabAnim.showView(fab3, h * 2.4f);
+        FabAnim.showView(fab4, h * 3.6f);
     }
 
 
@@ -200,7 +248,7 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick,
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
-                Snackbar.make(activityMain, "网络错误,数据暂未更新!", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(activityMainRelativelayout, "网络错误,数据暂未更新!", Snackbar.LENGTH_LONG).show();
             }
         });
 
@@ -230,7 +278,7 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick,
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
-                Snackbar.make(activityMain, "网络错误,数据暂未更新!", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(activityMainRelativelayout, "网络错误,数据暂未更新!", Snackbar.LENGTH_LONG).show();
             }
         });
 
@@ -263,15 +311,18 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick,
         String path = data.getResults().get(0).getLocation().getPath();
         path = path.substring(3, path.length() - 3);
         idMainPath.setText(path);
+        idMainHumidity.setText("湿度"+data.getResults().get(0).getNow().getHumidity()+"%");
+        idMainWindDirection.setText(data.getResults().get(0).getNow().getWind_direction()+"风");
+
 
         int resourceId = SelectWeatherImage.selectImageView(data.getResults().get(0).getNow().getCode());
         Glide.with(getActivity()).load(resourceId).into(idMainImageview);
 
         //发送一条广播用于显示通知栏
-        Intent  intent=new Intent();
-        intent.putExtra("city",data.getResults().get(0).getLocation().getName());
-        intent.putExtra("content",data.getResults().get(0).getNow().getText()+"\t\t\t\t"+data.getResults().get(0).getNow().getTemperature()+"℃");
-        intent.putExtra("code",data.getResults().get(0).getNow().getCode());
+        Intent intent = new Intent();
+        intent.putExtra("city", data.getResults().get(0).getLocation().getName());
+        intent.putExtra("content", data.getResults().get(0).getNow().getText() + "\t\t\t\t" + data.getResults().get(0).getNow().getTemperature() + "℃");
+        intent.putExtra("code", data.getResults().get(0).getNow().getCode());
         intent.setAction("Notification");
         getActivity().sendBroadcast(intent);
     }
@@ -279,10 +330,9 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick,
     public void initAdapter(DailyWeatherData dailyWeatherData) {
         mDayAdapter = new DayAdapter(getActivity(), dailyWeatherData);
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),3,GridLayoutManager.HORIZONTAL,false);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3, GridLayoutManager.HORIZONTAL, false);
         mDayAdapter.setRecyItemOnclick(this);
-        SlideInRightAnimatorAdapter rightAnimatorAdapter=new SlideInRightAnimatorAdapter(mDayAdapter,idMainRecyclerview);
-        rightAnimatorAdapter.getViewAnimator().setInitialDelayMillis(500);
+        SlideInRightAnimatorAdapter rightAnimatorAdapter = new SlideInRightAnimatorAdapter(mDayAdapter, idMainRecyclerview);
         idMainRecyclerview.setLayoutManager(gridLayoutManager);
         idMainRecyclerview.setAdapter(rightAnimatorAdapter);
     }

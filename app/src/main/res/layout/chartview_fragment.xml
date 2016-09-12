@@ -14,8 +14,8 @@
             android:layout_marginTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            app:dayColor="@color/white_half"
-            app:nightColor="@color/black_alpha_30"
+            app:dayColor="@color/yellow"
+            app:nightColor="@color/colorAccent"
             android:layout_centerVertical="true"
             android:layout_alignParentStart="true"
             android:id="@+id/id_chartview_weatherChartView" />

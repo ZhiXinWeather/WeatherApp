@@ -25,7 +25,7 @@ private RelativeLayout activityMain;
     @Override
     public void initView(View view) {
         super.initView(view);
-        activityMain= (RelativeLayout) view.findViewById(R.id.activity_main);
+        activityMain= (RelativeLayout) view.findViewById(R.id.activity_main_relativelayout);
         activityMain.setBackgroundResource(R.mipmap.bg_night);
         fab1.setImageResource(R.mipmap.moon);
     }

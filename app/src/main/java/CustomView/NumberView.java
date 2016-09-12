@@ -51,6 +51,6 @@ public class NumberView extends TextView {
     public void setNumber(int number) {
         this.number = number;
         //属性动画变化一次就设置一次文字内容
-        setText(number+"℃");
+        setText(number+"°");
     }
 }
