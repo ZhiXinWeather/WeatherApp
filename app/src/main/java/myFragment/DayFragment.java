@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -40,6 +41,7 @@ import java.text.SimpleDateFormat;
 import Adapter.DayAdapter;
 import App.MyApplication;
 import CustomView.FabAnim;
+import CustomView.LoadingView.ShapeLoadingDialog;
 import CustomView.NumberView;
 import GsonBean.DailyWeatherData;
 import GsonBean.WeatherNowData;
@@ -94,19 +96,21 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick,
     private DayAdapter mDayAdapter;
     private String locationStr;
 
+
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.app_bar_main, container, false);
+        final View view = inflater.inflate(R.layout.app_bar_main, container, false);
         ButterKnife.bind(this, view);
+
         initLocation();
         initView(view);
 
         initData();
         initDailyWeather();
-
-
         return view;
     }
 

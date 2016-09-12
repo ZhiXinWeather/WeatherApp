@@ -1,6 +1,7 @@
 package com.example.haiyuan1995.myapplication;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -24,6 +25,7 @@ import com.google.gson.Gson;
 import Adapter.AirAdapter;
 import Adapter.AirRankingAdapter;
 import App.MyApplication;
+import CustomView.LoadingView.ShapeLoadingDialog;
 import GsonBean.AirQualityData;
 import GsonBean.AirRankingData;
 import RecycleViewAnim.SlideInBottomAnimatorAdapter;
@@ -61,6 +63,7 @@ public class AirActivity extends AppCompatActivity {
     RecyclerView idAirRecyclerviewRanking;
 
     private String locationStr;
+    private ShapeLoadingDialog shapeLoadingDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,10 +72,21 @@ public class AirActivity extends AppCompatActivity {
         setContentView(R.layout.activity_air);
 
         ButterKnife.bind(this);
-        initView();
-        initLocation();
-        initAirData();
-        initAirRanking();
+        shapeLoadingDialog=new ShapeLoadingDialog(this);
+        shapeLoadingDialog.setCanceledOnTouchOutside(false);
+        shapeLoadingDialog.show();
+        //避免刷新太快没有动画
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                initView();
+                initLocation();
+                initAirData();
+                initAirRanking();
+                shapeLoadingDialog.dismiss();
+            }
+        },2000);
+
 
     }
 

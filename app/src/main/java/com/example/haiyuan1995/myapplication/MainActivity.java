@@ -19,6 +19,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Layout;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -32,6 +33,7 @@ import java.util.List;
 
 import Adapter.MyFragmentPagerAdapter;
 import Anim.AlphaTransformer;
+import CustomView.LoadingView.ShapeLoadingDialog;
 import Utils.SelectWeatherImage;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -59,21 +61,36 @@ public class MainActivity extends AppCompatActivity{
     private  MyBroadcastReceive broadcastReceive;
 
     private long EXIT_TIME=0;//点击两个返回键之间的时间
+    private ShapeLoadingDialog shapeLoadingDialog;//自定义形状变化的dialog
 
+    private View id_main_layout;//让加载动画有个背景布局
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);//去掉原来的actionbar
         setContentView(R.layout.activity_main);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);//让toolbar覆盖到状态栏上
+        //把加载背景中的某些控件去掉
+        id_main_layout=findViewById(R.id.id_main_layout);
+        id_main_layout.findViewById(R.id.id_main_recyclerview).setVisibility(View.GONE);
 
         ButterKnife.bind(this);
+        shapeLoadingDialog=new ShapeLoadingDialog(this);
+        shapeLoadingDialog.setCanceledOnTouchOutside(false);
+        shapeLoadingDialog.show();
+        //避免刷新太快没有动画
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                initLocation();
 
-        initLocation();
+                initBroadcastReciver();
 
-        initBroadcastReciver();
-
-        initFragmentViewPager();
+                initFragmentViewPager();
+                id_main_layout.setVisibility(View.GONE);//加载完成后把背景布局去掉，显示真正的布局
+                shapeLoadingDialog.dismiss();
+            }
+        },2000);
 
 
         idMainRefresh.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light, android.R.color.holo_orange_light, android.R.color.holo_green_light);
