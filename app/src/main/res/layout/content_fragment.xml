@@ -54,7 +54,7 @@
                 app:layout_anchorGravity="right|end"
                 android:layout_gravity="right"
                 app:borderWidth="0dp"
-                android:src="@drawable/heavy_rain"/>
+                android:src="@mipmap/clothing"/>
             <android.support.design.widget.FloatingActionButton
                 android:id="@+id/fab4"
                 android:visibility="gone"

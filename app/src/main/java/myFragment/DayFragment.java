@@ -118,7 +118,7 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick,
         selectCityName=getActivity().getSharedPreferences("config",getContext().MODE_PRIVATE).getString("selectCityName","");
     }
 
-    public void initView(View view) {
+    public void initView(final View view) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             view.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
                 @Override
@@ -195,6 +195,8 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick,
             }
         });
 
+
+
         idMainRecyclerview.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -211,10 +213,7 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick,
                 return false;
             }
         });
-
-
     }
-
 
     public void hideFab(float h) {
         FabAnim.hideView(fab2, h * 1.2f);

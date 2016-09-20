@@ -11,6 +11,7 @@
         android:id="@+id/id_search_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.ActionBar"
         android:fitsSystemWindows="true">
     </android.support.v7.widget.Toolbar>
 

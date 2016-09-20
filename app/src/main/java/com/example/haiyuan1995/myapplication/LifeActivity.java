@@ -1,8 +1,10 @@
 package com.example.haiyuan1995.myapplication;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,7 +22,9 @@ import com.google.gson.Gson;
 
 import Adapter.LifeAdapter;
 import App.MyApplication;
+import CustomView.LoadingView.ShapeLoadingDialog;
 import GsonBean.LifeWeatherData;
+import RecycleViewAnim.SlideInBottomAnimatorAdapter;
 import WeatherApiURL.Url;
 
 /**
@@ -33,20 +37,33 @@ public class LifeActivity extends AppCompatActivity implements View.OnClickListe
     private RecyclerView recyclerView_life;
     private RelativeLayout activitymain;
     private Toolbar id_toobar;
+    private ShapeLoadingDialog shapeLoadingDialog;
+
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_life);
         id_toobar= (Toolbar) findViewById(R.id.id_toolbar);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);//让toolbar覆盖到状态栏上
-        initToolbar();
-        initLocation();
-        initLifWeather();
-        initData();
+        shapeLoadingDialog=new ShapeLoadingDialog(this);
+        shapeLoadingDialog.setCanceledOnTouchOutside(false);
+        shapeLoadingDialog.show();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                initToolbar();
+                initLocation();
+                initLifWeather();
+                initData();
+
+            }
+        },2000);
+
     }
 
     public void initToolbar(){
-        id_toobar.setTitle("生活指数");
+        id_toobar.setTitle("出行建议");
+        id_toobar.setTitleTextColor(ActivityCompat.getColor(LifeActivity.this,R.color.white));
         id_toobar.setNavigationIcon(R.drawable.ic_chevron_left_white_24dp);
         setSupportActionBar(id_toobar);
         id_toobar.setNavigationOnClickListener(this);
@@ -81,6 +98,7 @@ public class LifeActivity extends AppCompatActivity implements View.OnClickListe
 
                 initAdapter(lifeWeatherData);
 
+
             }
         }, new Response.ErrorListener() {
             @Override
@@ -96,11 +114,11 @@ public class LifeActivity extends AppCompatActivity implements View.OnClickListe
 
     public void initAdapter(LifeWeatherData lifeWeatherData) {
         lifeAdapter = new LifeAdapter(LifeActivity.this, lifeWeatherData);
-
+        SlideInBottomAnimatorAdapter slideInBottomAnimatorAdapter=new SlideInBottomAnimatorAdapter(lifeAdapter,recyclerView_life);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(LifeActivity.this, LinearLayoutManager.VERTICAL, false);
         recyclerView_life.setLayoutManager(linearLayoutManager);
-        recyclerView_life.setAdapter(lifeAdapter);
-
+        recyclerView_life.setAdapter(slideInBottomAnimatorAdapter);
+        shapeLoadingDialog.dismiss();
     }
 
 

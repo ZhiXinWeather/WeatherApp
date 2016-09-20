@@ -23,6 +23,7 @@
         <activity android:name=".SearchActivity"/>
         <activity android:name=".AirActivity"/>
         <activity android:name=".LifeActivity"/>
+
     </application>
 
 </manifest>

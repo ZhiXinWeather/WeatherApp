@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.haiyuan1995.myapplication.R;
@@ -44,26 +45,31 @@ public  class LifeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
             if (holder instanceof Item1ViewHolder){
                 ((Item1ViewHolder) holder).tv_life.setText("穿衣");
+                ((Item1ViewHolder) holder).iv_icon.setBackgroundResource(R.mipmap.clothes);
                 ((Item1ViewHolder) holder).tv_zhishu.setText(lifeWeatherData.getResults().get(0).getSuggestion().getDressing().getBrief());
                 ((Item1ViewHolder) holder).life_content.setText("Tip: "+lifeWeatherData.getResults().get(0).getSuggestion().getDressing().getDetails());
 
         }else if (holder instanceof Item2ViewHolder){
                 ((Item2ViewHolder) holder).tv_life.setText("运动");
+                ((Item2ViewHolder) holder).iv_icon.setImageResource(R.mipmap.sport);
                 ((Item2ViewHolder) holder).tv_zhishu.setText(lifeWeatherData.getResults().get(0).getSuggestion().getSport().getBrief());
                 ((Item2ViewHolder) holder).life_content.setText("Tip: "+lifeWeatherData.getResults().get(0).getSuggestion().getSport().getDetails());
 
         }else if (holder instanceof Item3ViewHolder){
                 ((Item3ViewHolder) holder).tv_life.setText("交通");
+                ((Item3ViewHolder) holder).iv_icon.setImageResource(R.mipmap.transportation);
                 ((Item3ViewHolder) holder).tv_zhishu.setText(lifeWeatherData.getResults().get(0).getSuggestion().getTraffic().getBrief());
                 ((Item3ViewHolder) holder).life_content.setText("Tip: "+lifeWeatherData.getResults().get(0).getSuggestion().getTraffic().getDetails());
 
         }else  if (holder instanceof Item4ViewHolder){
                 ((Item4ViewHolder) holder).tv_life.setText("紫外线");
+                ((Item4ViewHolder) holder).iv_icon.setImageResource(R.mipmap.spf);
                 ((Item4ViewHolder) holder).tv_zhishu.setText(lifeWeatherData.getResults().get(0).getSuggestion().getUv().getBrief());
                 ((Item4ViewHolder) holder).life_content.setText("Tip: "+lifeWeatherData.getResults().get(0).getSuggestion().getUv().getDetails());
 
         }else {
                 ((Item5ViewHolder) holder).tv_life.setText("舒适度");
+                ((Item5ViewHolder) holder).iv_icon.setImageResource(R.mipmap.feel);
                 ((Item5ViewHolder) holder).tv_zhishu.setText(lifeWeatherData.getResults().get(0).getSuggestion().getComfort().getBrief());
                 ((Item5ViewHolder) holder).life_content.setText("Tip: "+lifeWeatherData.getResults().get(0).getSuggestion().getComfort().getDetails());
         }
@@ -87,49 +93,59 @@ public  int getItemViewType(int position){
 
     private class Item1ViewHolder extends RecyclerView.ViewHolder {
         TextView tv_life,tv_zhishu,life_content;
+        ImageView iv_icon;
         public Item1ViewHolder(View itemview) {
             super(itemview);
             tv_life= (TextView) itemview.findViewById(R.id.id_life);
             tv_zhishu= (TextView) itemview.findViewById(R.id.id_life_zhishu);
             life_content= (TextView) itemview.findViewById(R.id.life_content);
+            iv_icon= (ImageView) itemview.findViewById(R.id.id_life_icon);
 
         }
     }
 
     private class Item2ViewHolder extends RecyclerView.ViewHolder {
         TextView tv_life,tv_zhishu,life_content;
+        ImageView iv_icon;
         public Item2ViewHolder(View itemview) {
             super(itemview);
             tv_life= (TextView) itemview.findViewById(R.id.id_life);
             tv_zhishu= (TextView) itemview.findViewById(R.id.id_life_zhishu);
             life_content= (TextView) itemview.findViewById(R.id.life_content);
+            iv_icon= (ImageView) itemview.findViewById(R.id.id_life_icon);
         }
     }
 
     private class Item3ViewHolder extends RecyclerView.ViewHolder {
         TextView tv_life,tv_zhishu,life_content;
+        ImageView iv_icon;
         public Item3ViewHolder(View itemview) {
             super(itemview);
             tv_life= (TextView) itemview.findViewById(R.id.id_life);
             tv_zhishu= (TextView) itemview.findViewById(R.id.id_life_zhishu);
             life_content= (TextView) itemview.findViewById(R.id.life_content);
+            iv_icon= (ImageView) itemview.findViewById(R.id.id_life_icon);
         }
     }
     private class Item4ViewHolder extends RecyclerView.ViewHolder {
         TextView tv_life,tv_zhishu,life_content;
+        ImageView iv_icon;
         public Item4ViewHolder(View itemview) {
             super(itemview);
             tv_life= (TextView) itemview.findViewById(R.id.id_life);
             tv_zhishu= (TextView) itemview.findViewById(R.id.id_life_zhishu);
+            iv_icon= (ImageView) itemview.findViewById(R.id.id_life_icon);
             life_content= (TextView) itemview.findViewById(R.id.life_content);
         }
     }
     private class Item5ViewHolder extends RecyclerView.ViewHolder {
         TextView tv_life,tv_zhishu,life_content;
+        ImageView iv_icon;
         public Item5ViewHolder(View itemview) {
             super(itemview);
             tv_life= (TextView) itemview.findViewById(R.id.id_life);
             tv_zhishu= (TextView) itemview.findViewById(R.id.id_life_zhishu);
+            iv_icon= (ImageView) itemview.findViewById(R.id.id_life_icon);
             life_content= (TextView) itemview.findViewById(R.id.life_content);
         }
     }

@@ -268,6 +268,8 @@ public class MainActivity extends AppCompatActivity{
                 return false;
             }
         });
+        //载入完成，隐藏进度动画
+
 
     }
 

@@ -1,14 +1,18 @@
 package com.example.haiyuan1995.myapplication;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -55,6 +59,7 @@ public class SearchActivity extends AppCompatActivity {
     RecyclerView idSearchRecycleview;
     private ArrayAdapter<String> adapter;
     private String selectCityName;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -187,6 +192,7 @@ public class SearchActivity extends AppCompatActivity {
     private void initToolbar() {
         idSearchToolbar.setTitle("");
         idSearchToolbar.setNavigationIcon(R.drawable.ic_chevron_left_white_24dp);
+
         setSupportActionBar(idSearchToolbar);
 
         idSearchToolbar.setNavigationOnClickListener(new View.OnClickListener() {

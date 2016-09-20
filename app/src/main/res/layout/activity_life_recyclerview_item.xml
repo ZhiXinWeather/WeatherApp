@@ -2,30 +2,27 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-
-    >
-
+    android:background="@android:color/transparent"
+    android:layout_height="wrap_content">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/img_icon"
-        android:background="@mipmap/ic_launcher"
-        android:layout_margin="10dp"/>
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/id_life_icon"
+        android:layout_margin="10dp"
+        android:scaleType="fitXY"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="穿衣指数"
-        android:layout_margin="20dp"
+        android:layout_marginTop="20dp"
         android:id="@+id/id_life"
-        android:textSize="28sp"
+        android:textColor="@color/white"
+        android:textSize="22sp"
         android:layout_weight="0.35" />
-
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -40,23 +37,23 @@
                 android:layout_marginRight="5dp"
                 android:textSize="15sp"
                 android:text="热"
-                android:textColor="#FF0000"/>
-
-
+                android:textColor="@color/colorAccent"/>
     </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/life_content"
             android:paddingLeft="15dp"
             android:layout_gravity="center"
+            android:gravity="left"
             android:text="今天天气不错"
-            android:textSize="18sp"
+            android:textColor="@color/white_half"
+            android:textSize="16sp"
             android:lines="3"/>
     </LinearLayout>
 </LinearLayout>
