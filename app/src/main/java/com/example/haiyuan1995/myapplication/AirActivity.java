@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -64,6 +65,7 @@ public class AirActivity extends AppCompatActivity {
 
     private String locationStr;
     private ShapeLoadingDialog shapeLoadingDialog;
+    private String selectCityName;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -143,15 +145,20 @@ public class AirActivity extends AppCompatActivity {
 
     private void initLocation() {
         locationStr = getSharedPreferences("config", MODE_PRIVATE).getString("locationStr", "");
+        selectCityName=getSharedPreferences("config",MODE_PRIVATE).getString("selectCityName","");
     }
 
     private void initAirData() {//获取空气质量数据，all参数为获取市内所有监测站数据
         String airQuality;
-        if (locationStr.length() == 0 || locationStr == null) {
-            airQuality = Url.Weather_Air_Url + "?key=" + MyApplication.Key + "&location=ip&scope=all";
+        if (TextUtils.isEmpty(selectCityName)) {
+            if (locationStr.length() == 0 || locationStr == null) {
+                airQuality = Url.Weather_Air_Url + "?key=" + MyApplication.Key + "&location=ip&scope=all";
 
-        } else {
-            airQuality = Url.Weather_Air_Url + "?key=" + MyApplication.Key + "&location=" + locationStr + "&scope=all";
+            } else {
+                airQuality = Url.Weather_Air_Url + "?key=" + MyApplication.Key + "&location=" + locationStr + "&scope=all";
+            }
+        }else{
+            airQuality = Url.Weather_Air_Url + "?key=" + MyApplication.Key + "&location=" + selectCityName + "&scope=all";
         }
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, airQuality, new Response.Listener<String>() {

@@ -1,10 +1,9 @@
-package myFragment;
+package MyFragment;
 
 import android.animation.Animator;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -14,6 +13,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -23,7 +23,6 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -31,6 +30,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
 import com.example.haiyuan1995.myapplication.AirActivity;
+import com.example.haiyuan1995.myapplication.LifeActivity;
 import com.example.haiyuan1995.myapplication.R;
 import com.example.haiyuan1995.myapplication.SearchActivity;
 import com.google.gson.Gson;
@@ -41,7 +41,6 @@ import java.text.SimpleDateFormat;
 import Adapter.DayAdapter;
 import App.MyApplication;
 import CustomView.FabAnim;
-import CustomView.LoadingView.ShapeLoadingDialog;
 import CustomView.NumberView;
 import GsonBean.DailyWeatherData;
 import GsonBean.WeatherNowData;
@@ -95,8 +94,7 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick,
 
     private DayAdapter mDayAdapter;
     private String locationStr;
-
-
+    private String selectCityName;
 
 
     @Nullable
@@ -116,8 +114,8 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick,
 
 
     private void initLocation() {
-        locationStr = getActivity().getSharedPreferences("config", getActivity().MODE_PRIVATE).getString("locationStr", "");
-
+        locationStr = getActivity().getSharedPreferences("config", getContext().MODE_PRIVATE).getString("locationStr", "");
+        selectCityName=getActivity().getSharedPreferences("config",getContext().MODE_PRIVATE).getString("selectCityName","");
     }
 
     public void initView(View view) {
@@ -187,7 +185,7 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick,
         fab3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "fab3", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getActivity(), LifeActivity.class));
             }
         });
         fab4.setOnClickListener(new View.OnClickListener() {
@@ -233,11 +231,15 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick,
 
     public void initDailyWeather() {//初始化近期天气数据列表,根据经纬度查询
         String dailyWeather;
-        if (locationStr.length() == 0 || locationStr == null) {
-            dailyWeather = Url.Weather_Daily_Url + "?key=" + MyApplication.Key + "&location=ip&start=0&days=5";
+        if (TextUtils.isEmpty(selectCityName)) {
+            if (locationStr.length() == 0 || locationStr == null) {
+                dailyWeather = Url.Weather_Daily_Url + "?key=" + MyApplication.Key + "&location=ip&start=0&days=5";
 
-        } else {
-            dailyWeather = Url.Weather_Daily_Url + "?key=" + MyApplication.Key + "&location=" + locationStr + "&start=0&days=5";
+            } else {
+                dailyWeather = Url.Weather_Daily_Url + "?key=" + MyApplication.Key + "&location=" + locationStr + "&start=0&days=5";
+            }
+        }else{
+            dailyWeather = Url.Weather_Daily_Url + "?key=" + MyApplication.Key + "&location=" + selectCityName + "&start=0&days=5";
         }
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, dailyWeather, new Response.Listener<String>() {
@@ -263,11 +265,15 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick,
 
     public void initData() {
         String weathernow;
+        if (TextUtils.isEmpty(selectCityName)){
         if (locationStr.length() == 0 || locationStr == null) {
             weathernow = Url.Weather_Now_Url + "?key=" + MyApplication.Key + "&location=ip";
         } else {
-            //默认用IP地址作为查询天气的城市
+            //前两者都为空用IP地址作为查询天气的城市
             weathernow = Url.Weather_Now_Url + "?key=" + MyApplication.Key + "&location=" + locationStr;
+        }
+        }else {
+            weathernow = Url.Weather_Now_Url + "?key=" + MyApplication.Key + "&location=" + selectCityName;
         }
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, weathernow, new Response.Listener<String>() {
@@ -359,5 +365,4 @@ public class DayFragment extends Fragment implements DayAdapter.RecyItemOnclick,
 
 
     }
-
 }

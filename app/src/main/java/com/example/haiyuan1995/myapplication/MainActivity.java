@@ -19,7 +19,6 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Layout;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -37,9 +36,9 @@ import CustomView.LoadingView.ShapeLoadingDialog;
 import Utils.SelectWeatherImage;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import myFragment.ChartFragment;
-import myFragment.DayFragment;
-import myFragment.NightFragment;
+import MyFragment.ChartFragment;
+import MyFragment.DayFragment;
+import MyFragment.NightFragment;
 
 public class MainActivity extends AppCompatActivity{
 
@@ -73,6 +72,7 @@ public class MainActivity extends AppCompatActivity{
         //把加载背景中的某些控件去掉
         id_main_layout=findViewById(R.id.id_main_layout);
         id_main_layout.findViewById(R.id.id_main_recyclerview).setVisibility(View.GONE);
+        id_main_layout.findViewById(R.id.fab1).setVisibility(View.GONE);
 
         ButterKnife.bind(this);
         shapeLoadingDialog=new ShapeLoadingDialog(this);
@@ -114,6 +114,7 @@ public class MainActivity extends AppCompatActivity{
         //动态注册广播接收器
         broadcastReceive=new MyBroadcastReceive();
         IntentFilter intentFilter=new IntentFilter("Notification");
+        intentFilter.addAction("CityChange");
         registerReceiver(broadcastReceive,intentFilter);
     }
 
@@ -208,7 +209,7 @@ public class MainActivity extends AppCompatActivity{
 /**
  * 通过Fragment作为ViewPager的数据源
  */
-        list = new ArrayList<Fragment>();
+        list = new ArrayList<>();
         DayFragment dayFragment = new DayFragment();
         NightFragment nightFragment = new NightFragment();
         ChartFragment chartFragment=new ChartFragment();
@@ -287,7 +288,11 @@ public class MainActivity extends AppCompatActivity{
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            initNotification(intent);
+            if (intent.getAction().equals("Notification")) {
+                initNotification(intent);
+            }else if(intent.getAction().equals("CityChange")) {
+                myFragmentPagerAdapter.notifyDataSetChanged();
+            }
         }
     }
 

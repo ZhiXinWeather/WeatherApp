@@ -2,6 +2,7 @@ package WeatherApiURL;
 
 /**
  * Created by haiyuan 1995 on 2016/8/29.
+ * url地址
  */
 
 public class Url {

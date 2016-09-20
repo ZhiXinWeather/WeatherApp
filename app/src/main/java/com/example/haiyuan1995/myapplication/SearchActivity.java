@@ -1,5 +1,6 @@
 package com.example.haiyuan1995.myapplication;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -7,6 +8,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -14,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -49,7 +54,7 @@ public class SearchActivity extends AppCompatActivity {
     @BindView(R.id.id_search_recycleview)
     RecyclerView idSearchRecycleview;
     private ArrayAdapter<String> adapter;
-
+    private String selectCityName;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,7 +108,7 @@ public class SearchActivity extends AppCompatActivity {
                 } else {
                     //搜索内容为空时清空列表
                     if (adapter!=null){
-                    adapter.clear();
+                        adapter.clear();
                     }
                     idSearchListview.setVisibility(View.GONE);
                 }
@@ -117,7 +122,7 @@ public class SearchActivity extends AppCompatActivity {
         //隐藏自动提示的listview
         idSearchListview.setVisibility(View.GONE);
         HideKeyBoard.hide(SearchActivity.this);//隐藏键盘
-
+        selectCityName=query;//所选择的城市
         try {
             query = URLEncoder.encode(query, "UTF-8");
         } catch (UnsupportedEncodingException e) {
@@ -162,7 +167,7 @@ public class SearchActivity extends AppCompatActivity {
         for (int i = 0; i < cityData.getResults().size(); i++) {
             arrayList.add(cityData.getResults().get(i).getName()+"\t\t\t\t"+cityData.getResults().get(i).getCountry());
         }
-        adapter = new ArrayAdapter<String>(getApplicationContext(),
+        adapter = new ArrayAdapter<>(getApplicationContext(),
                 android.R.layout.simple_list_item_1, arrayList);
         idSearchListview.setAdapter(adapter);
 
@@ -190,6 +195,43 @@ public class SearchActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_ok)
+        {
+            if(!TextUtils.isEmpty(selectCityName)){
+                Toast.makeText(getApplicationContext(),"切换城市:"+selectCityName,Toast.LENGTH_SHORT).show();
+
+                try {
+                    //转换为utf-8格式再储存
+                    selectCityName=URLEncoder.encode(selectCityName,"UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+
+                getSharedPreferences("config",MODE_PRIVATE).
+                        edit().putString("selectCityName",selectCityName)
+                        .apply();
+                sendBroadcast(new Intent("CityChange"));
+                finish();
+            }else{
+                Toast.makeText(getApplicationContext(),"没有变动",Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

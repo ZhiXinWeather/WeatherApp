@@ -27,7 +27,7 @@ import com.example.haiyuan1995.myapplication.R;
  */
 public class LoadingView extends FrameLayout {
 
-    private static final int ANIMATION_DURATION = 500;
+    private static final int ANIMATION_DURATION = 350;
 
     private static  float mDistance = 100;
 

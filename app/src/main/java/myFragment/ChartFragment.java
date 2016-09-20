@@ -1,4 +1,4 @@
-package myFragment;
+package MyFragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
